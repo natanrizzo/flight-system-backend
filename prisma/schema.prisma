@@ -1,0 +1,228 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// F1, F2: Defines users, who can be Passengers or Maintainers.
+model User {
+  id              Int           @id @default(autoincrement())
+  name            String
+  fullAddress     String
+  phoneNumbers    String
+  email           String        @unique
+  workplace       String?
+  workAddress     String?
+  dateOfBirth     DateTime
+  cpf             String        @unique // Brazilian document ID
+  rg              String // Brazilian document ID
+  rgIssuanceDate  DateTime
+  rgIssuingAgency String
+  username        String        @unique
+  password        String // Should be stored as a hash
+  role            UserRole      @default(PASSENGER)
+  reservations    Reservation[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+enum UserRole {
+  PASSENGER
+  MAINTAINER
+}
+
+// F6: Defines airline employees.
+model Employee {
+  id          Int          @id @default(autoincrement())
+  fullName    String
+  dateOfBirth DateTime
+  mobilePhone String
+  email       String       @unique
+  role        EmployeeRole
+  flights     FlightCrew[]
+}
+
+enum EmployeeRole {
+  PILOT
+  COPILOT
+  FLIGHT_ATTENDANT
+  GROUND_STAFF
+}
+
+// F7: Defines the operated airports.
+model Airport {
+  id               Int        @id @default(autoincrement())
+  code             String //@unique @db.VarChar(3) // e.g., "GRU", "JFK"
+  name             String
+  city             String
+  state            String
+  country          String
+  departingFlights Flight[]   @relation("DepartingFlights")
+  arrivingFlights  Flight[]   @relation("ArrivingFlights")
+  stopovers        Stopover[]
+}
+
+// F3: Defines flight types (e.g., domestic, international).
+model FlightType {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  description String?
+  flights     Flight[]
+}
+
+// F4: Defines aircraft models.
+model AircraftType {
+  id           Int        @id @default(autoincrement())
+  model        String     @unique // e.g., "Boeing 737"
+  description  String?
+  seatCapacity Int
+  seatMap      Json // Flexible for storing row/seat structure
+  aircrafts    Aircraft[]
+}
+
+// F5: Defines a specific aircraft, an instance of an AircraftType.
+model Aircraft {
+  id                 Int          @id @default(autoincrement())
+  registrationNumber String       @unique
+  aircraftTypeId     Int
+  aircraftType       AircraftType @relation(fields: [aircraftTypeId], references: [id])
+  flights            Flight[]
+}
+
+// F8, 1.4: The central entity representing a flight schedule.
+model Flight {
+  id                       Int      @id @default(autoincrement())
+  flightNumber             String   @unique
+  departureDateTime        DateTime
+  arrivalDateTime          DateTime
+  estimatedDurationMinutes Int
+
+  flightTypeId Int
+  flightType   FlightType @relation(fields: [flightTypeId], references: [id])
+
+  aircraftId Int
+  aircraft   Aircraft @relation(fields: [aircraftId], references: [id])
+
+  originAirportId Int
+  originAirport   Airport @relation("DepartingFlights", fields: [originAirportId], references: [id])
+
+  destinationAirportId Int
+  destinationAirport   Airport @relation("ArrivingFlights", fields: [destinationAirportId], references: [id])
+
+  stopovers    Stopover[]
+  crewMembers  FlightCrew[]
+  reservations Reservation[]
+  seats        Seat[]
+}
+
+// F8: Join table representing flight stopovers.
+model Stopover {
+  id                Int      @id @default(autoincrement())
+  flightId          Int
+  flight            Flight   @relation(fields: [flightId], references: [id])
+  airportId         Int
+  airport           Airport  @relation(fields: [airportId], references: [id])
+  order             Int // To order the stops (1, 2, 3...)
+  arrivalDateTime   DateTime
+  departureDateTime DateTime
+
+  @@unique([flightId, airportId])
+  @@unique([flightId, order])
+}
+
+// F8: Join table to assign multiple employees (crew) to a flight.
+model FlightCrew {
+  flightId   Int
+  flight     Flight   @relation(fields: [flightId], references: [id])
+  employeeId Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+
+  @@id([flightId, employeeId])
+}
+
+// Seat: Represents a seat in a flight
+model Seat {
+  id          Int     @id @default(autoincrement())
+  flightId    Int
+  flight      Flight  @relation(fields: [flightId], references: [id], onDelete: Cascade)
+  seatNumber  String // e.g., "1A", "12B"
+  isAvailable Boolean @default(true)
+
+  @@unique([flightId, seatNumber])
+}
+
+// F9, F10: Represents a passenger's booking.
+model Reservation {
+  id                Int               @id @default(autoincrement())
+  reservationNumber String            @unique
+  bookingDate       DateTime          @default(now())
+  totalPrice        Decimal //@db.Decimal(10, 2)
+  status            ReservationStatus @default(PENDING)
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  flightId Int
+  flight   Flight @relation(fields: [flightId], references: [id])
+
+  tickets Ticket[]
+  payment Payment?
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+// F9: Represents an individual ticket (seat) within a reservation.
+model Ticket {
+  id            Int    @id @default(autoincrement())
+  passengerName String
+  seatNumber    String // e.g., "12A", "23C"
+
+  reservationId Int
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+}
+
+// F10, F12, F13: Payment details associated with one reservation.
+model Payment {
+  id            Int           @id @default(autoincrement())
+  reservationId Int           @unique
+  reservation   Reservation   @relation(fields: [reservationId], references: [id])
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  processedAt   DateTime?
+
+  // Credit Card fields
+  cardType           String?
+  cardLastFourDigits String?
+  cardExpiryDate     String? // MM/YY
+
+  // Bank Slip fields
+  slipExpiryDate DateTime?
+  slipBarcode    String?
+
+  createdAt DateTime @default(now())
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  BANK_SLIP
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  DECLINED
+  REFUNDED
+}
