@@ -301,16 +301,17 @@ async function main() {
   console.log(`✅ ${employees.count} funcionários criados`);
 
   // ============================================
-  // SEED DE VOOS PARA OUTUBRO DE 2025
+  // SEED DE VOOS PARA NOVEMBRO E DEZEMBRO DE 2025
   // ============================================
-  console.log('📅 Criando voos para outubro de 2025...');
+  console.log('📅 Criando voos para novembro e dezembro de 2025...');
 
   const flightData = [
-    // Semana 1
+    // ===== NOVEMBRO 2025 =====
+    // Semana 1 de Novembro
     {
       flightNumber: 'AA-001',
-      departureDateTime: new Date('2025-10-01T08:00:00'),
-      arrivalDateTime: new Date('2025-10-01T10:30:00'),
+      departureDateTime: new Date('2025-11-03T08:00:00'),
+      arrivalDateTime: new Date('2025-11-03T10:30:00'),
       estimatedDurationMinutes: 150,
       flightTypeId: 1, // Doméstico
       aircraftId: 1,
@@ -319,8 +320,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-002',
-      departureDateTime: new Date('2025-10-01T14:00:00'),
-      arrivalDateTime: new Date('2025-10-01T16:15:00'),
+      departureDateTime: new Date('2025-11-03T14:00:00'),
+      arrivalDateTime: new Date('2025-11-03T16:15:00'),
       estimatedDurationMinutes: 135,
       flightTypeId: 1,
       aircraftId: 2,
@@ -329,8 +330,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-003',
-      departureDateTime: new Date('2025-10-02T09:00:00'),
-      arrivalDateTime: new Date('2025-10-02T13:45:00'),
+      departureDateTime: new Date('2025-11-04T09:00:00'),
+      arrivalDateTime: new Date('2025-11-04T13:45:00'),
       estimatedDurationMinutes: 285,
       flightTypeId: 1,
       aircraftId: 3,
@@ -339,19 +340,19 @@ async function main() {
     },
     {
       flightNumber: 'AA-004',
-      departureDateTime: new Date('2025-10-02T15:30:00'),
-      arrivalDateTime: new Date('2025-10-02T20:00:00'),
+      departureDateTime: new Date('2025-11-04T15:30:00'),
+      arrivalDateTime: new Date('2025-11-04T20:00:00'),
       estimatedDurationMinutes: 270,
       flightTypeId: 1,
       aircraftId: 4,
       originAirportId: 4, // RIO
       destinationAirportId: 1, // GRU
     },
-    // Semana 2
+    // Semana 2 de Novembro
     {
       flightNumber: 'AA-005',
-      departureDateTime: new Date('2025-10-06T07:30:00'),
-      arrivalDateTime: new Date('2025-10-06T09:45:00'),
+      departureDateTime: new Date('2025-11-10T07:30:00'),
+      arrivalDateTime: new Date('2025-11-10T09:45:00'),
       estimatedDurationMinutes: 135,
       flightTypeId: 1,
       aircraftId: 5,
@@ -360,8 +361,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-006',
-      departureDateTime: new Date('2025-10-06T11:00:00'),
-      arrivalDateTime: new Date('2025-10-06T15:45:00'),
+      departureDateTime: new Date('2025-11-10T11:00:00'),
+      arrivalDateTime: new Date('2025-11-10T15:45:00'),
       estimatedDurationMinutes: 285,
       flightTypeId: 1,
       aircraftId: 1,
@@ -370,8 +371,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-007',
-      departureDateTime: new Date('2025-10-07T08:15:00'),
-      arrivalDateTime: new Date('2025-10-07T10:30:00'),
+      departureDateTime: new Date('2025-11-11T08:15:00'),
+      arrivalDateTime: new Date('2025-11-11T10:30:00'),
       estimatedDurationMinutes: 135,
       flightTypeId: 1,
       aircraftId: 2,
@@ -380,19 +381,19 @@ async function main() {
     },
     {
       flightNumber: 'AA-008',
-      departureDateTime: new Date('2025-10-07T13:00:00'),
-      arrivalDateTime: new Date('2025-10-07T17:30:00'),
+      departureDateTime: new Date('2025-11-11T13:00:00'),
+      arrivalDateTime: new Date('2025-11-11T17:30:00'),
       estimatedDurationMinutes: 270,
       flightTypeId: 1,
       aircraftId: 3,
       originAirportId: 4, // RIO
       destinationAirportId: 7, // POA (Porto Alegre)
     },
-    // Semana 3
+    // Semana 3 de Novembro
     {
       flightNumber: 'AA-009',
-      departureDateTime: new Date('2025-10-13T06:45:00'),
-      arrivalDateTime: new Date('2025-10-13T10:15:00'),
+      departureDateTime: new Date('2025-11-17T06:45:00'),
+      arrivalDateTime: new Date('2025-11-17T10:15:00'),
       estimatedDurationMinutes: 210,
       flightTypeId: 1,
       aircraftId: 4,
@@ -401,8 +402,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-010',
-      departureDateTime: new Date('2025-10-13T12:30:00'),
-      arrivalDateTime: new Date('2025-10-13T14:45:00'),
+      departureDateTime: new Date('2025-11-17T12:30:00'),
+      arrivalDateTime: new Date('2025-11-17T14:45:00'),
       estimatedDurationMinutes: 135,
       flightTypeId: 1,
       aircraftId: 5,
@@ -411,8 +412,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-011',
-      departureDateTime: new Date('2025-10-14T09:00:00'),
-      arrivalDateTime: new Date('2025-10-14T13:30:00'),
+      departureDateTime: new Date('2025-11-18T09:00:00'),
+      arrivalDateTime: new Date('2025-11-18T13:30:00'),
       estimatedDurationMinutes: 270,
       flightTypeId: 1,
       aircraftId: 1,
@@ -421,19 +422,19 @@ async function main() {
     },
     {
       flightNumber: 'AA-012',
-      departureDateTime: new Date('2025-10-14T15:15:00'),
-      arrivalDateTime: new Date('2025-10-14T19:45:00'),
+      departureDateTime: new Date('2025-11-18T15:15:00'),
+      arrivalDateTime: new Date('2025-11-18T19:45:00'),
       estimatedDurationMinutes: 270,
       flightTypeId: 1,
       aircraftId: 2,
       originAirportId: 6, // CWB
       destinationAirportId: 1, // GRU
     },
-    // Semana 4
+    // Semana 4 de Novembro
     {
       flightNumber: 'AA-013',
-      departureDateTime: new Date('2025-10-20T08:00:00'),
-      arrivalDateTime: new Date('2025-10-20T12:30:00'),
+      departureDateTime: new Date('2025-11-24T08:00:00'),
+      arrivalDateTime: new Date('2025-11-24T12:30:00'),
       estimatedDurationMinutes: 270,
       flightTypeId: 1,
       aircraftId: 3,
@@ -442,8 +443,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-014',
-      departureDateTime: new Date('2025-10-20T14:00:00'),
-      arrivalDateTime: new Date('2025-10-20T18:45:00'),
+      departureDateTime: new Date('2025-11-24T14:00:00'),
+      arrivalDateTime: new Date('2025-11-24T18:45:00'),
       estimatedDurationMinutes: 285,
       flightTypeId: 1,
       aircraftId: 4,
@@ -452,8 +453,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-015',
-      departureDateTime: new Date('2025-10-21T07:30:00'),
-      arrivalDateTime: new Date('2025-10-21T09:45:00'),
+      departureDateTime: new Date('2025-11-25T07:30:00'),
+      arrivalDateTime: new Date('2025-11-25T09:45:00'),
       estimatedDurationMinutes: 135,
       flightTypeId: 1,
       aircraftId: 5,
@@ -462,19 +463,21 @@ async function main() {
     },
     {
       flightNumber: 'AA-016',
-      departureDateTime: new Date('2025-10-21T11:00:00'),
-      arrivalDateTime: new Date('2025-10-21T15:30:00'),
+      departureDateTime: new Date('2025-11-25T11:00:00'),
+      arrivalDateTime: new Date('2025-11-25T15:30:00'),
       estimatedDurationMinutes: 270,
       flightTypeId: 1,
       aircraftId: 1,
       originAirportId: 7, // POA
       destinationAirportId: 1, // GRU
     },
-    // Semana 5
+
+    // ===== DEZEMBRO 2025 =====
+    // Semana 1 de Dezembro
     {
       flightNumber: 'AA-017',
-      departureDateTime: new Date('2025-10-27T09:00:00'),
-      arrivalDateTime: new Date('2025-10-27T11:15:00'),
+      departureDateTime: new Date('2025-12-01T09:00:00'),
+      arrivalDateTime: new Date('2025-12-01T11:15:00'),
       estimatedDurationMinutes: 135,
       flightTypeId: 1,
       aircraftId: 2,
@@ -483,8 +486,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-018',
-      departureDateTime: new Date('2025-10-27T13:30:00'),
-      arrivalDateTime: new Date('2025-10-27T18:15:00'),
+      departureDateTime: new Date('2025-12-01T13:30:00'),
+      arrivalDateTime: new Date('2025-12-01T18:15:00'),
       estimatedDurationMinutes: 285,
       flightTypeId: 1,
       aircraftId: 3,
@@ -493,8 +496,8 @@ async function main() {
     },
     {
       flightNumber: 'AA-019',
-      departureDateTime: new Date('2025-10-28T08:15:00'),
-      arrivalDateTime: new Date('2025-10-28T10:30:00'),
+      departureDateTime: new Date('2025-12-02T08:15:00'),
+      arrivalDateTime: new Date('2025-12-02T10:30:00'),
       estimatedDurationMinutes: 135,
       flightTypeId: 1,
       aircraftId: 4,
@@ -503,13 +506,136 @@ async function main() {
     },
     {
       flightNumber: 'AA-020',
-      departureDateTime: new Date('2025-10-28T15:00:00'),
-      arrivalDateTime: new Date('2025-10-28T17:30:00'),
+      departureDateTime: new Date('2025-12-02T15:00:00'),
+      arrivalDateTime: new Date('2025-12-02T17:30:00'),
       estimatedDurationMinutes: 150,
       flightTypeId: 1,
       aircraftId: 5,
       originAirportId: 5, // MCP
       destinationAirportId: 3, // LDB
+    },
+    // Semana 2 de Dezembro
+    {
+      flightNumber: 'AA-021',
+      departureDateTime: new Date('2025-12-08T07:30:00'),
+      arrivalDateTime: new Date('2025-12-08T09:45:00'),
+      estimatedDurationMinutes: 135,
+      flightTypeId: 1,
+      aircraftId: 1,
+      originAirportId: 2, // CGH
+      destinationAirportId: 3, // LDB
+    },
+    {
+      flightNumber: 'AA-022',
+      departureDateTime: new Date('2025-12-08T11:00:00'),
+      arrivalDateTime: new Date('2025-12-08T15:45:00'),
+      estimatedDurationMinutes: 285,
+      flightTypeId: 1,
+      aircraftId: 2,
+      originAirportId: 1, // GRU
+      destinationAirportId: 5, // MCP (Confins)
+    },
+    {
+      flightNumber: 'AA-023',
+      departureDateTime: new Date('2025-12-09T08:15:00'),
+      arrivalDateTime: new Date('2025-12-09T10:30:00'),
+      estimatedDurationMinutes: 135,
+      flightTypeId: 1,
+      aircraftId: 3,
+      originAirportId: 3, // LDB
+      destinationAirportId: 6, // CWB (Curitiba)
+    },
+    {
+      flightNumber: 'AA-024',
+      departureDateTime: new Date('2025-12-09T13:00:00'),
+      arrivalDateTime: new Date('2025-12-09T17:30:00'),
+      estimatedDurationMinutes: 270,
+      flightTypeId: 1,
+      aircraftId: 4,
+      originAirportId: 4, // RIO
+      destinationAirportId: 7, // POA (Porto Alegre)
+    },
+    // Semana 3 de Dezembro
+    {
+      flightNumber: 'AA-025',
+      departureDateTime: new Date('2025-12-15T06:45:00'),
+      arrivalDateTime: new Date('2025-12-15T10:15:00'),
+      estimatedDurationMinutes: 210,
+      flightTypeId: 1,
+      aircraftId: 5,
+      originAirportId: 2, // CGH
+      destinationAirportId: 8, // BSB (Brasília)
+    },
+    {
+      flightNumber: 'AA-026',
+      departureDateTime: new Date('2025-12-15T12:30:00'),
+      arrivalDateTime: new Date('2025-12-15T14:45:00'),
+      estimatedDurationMinutes: 135,
+      flightTypeId: 1,
+      aircraftId: 1,
+      originAirportId: 1, // GRU
+      destinationAirportId: 3, // LDB
+    },
+    {
+      flightNumber: 'AA-027',
+      departureDateTime: new Date('2025-12-16T09:00:00'),
+      arrivalDateTime: new Date('2025-12-16T13:30:00'),
+      estimatedDurationMinutes: 270,
+      flightTypeId: 1,
+      aircraftId: 2,
+      originAirportId: 5, // MCP
+      destinationAirportId: 4, // RIO
+    },
+    {
+      flightNumber: 'AA-028',
+      departureDateTime: new Date('2025-12-16T15:15:00'),
+      arrivalDateTime: new Date('2025-12-16T19:45:00'),
+      estimatedDurationMinutes: 270,
+      flightTypeId: 1,
+      aircraftId: 3,
+      originAirportId: 6, // CWB
+      destinationAirportId: 1, // GRU
+    },
+    // Semana 4 de Dezembro (Festa)
+    {
+      flightNumber: 'AA-029',
+      departureDateTime: new Date('2025-12-22T08:00:00'),
+      arrivalDateTime: new Date('2025-12-22T12:30:00'),
+      estimatedDurationMinutes: 270,
+      flightTypeId: 1,
+      aircraftId: 4,
+      originAirportId: 2, // CGH
+      destinationAirportId: 9, // SSA (Salvador)
+    },
+    {
+      flightNumber: 'AA-030',
+      departureDateTime: new Date('2025-12-22T14:00:00'),
+      arrivalDateTime: new Date('2025-12-22T18:45:00'),
+      estimatedDurationMinutes: 285,
+      flightTypeId: 1,
+      aircraftId: 5,
+      originAirportId: 1, // GRU
+      destinationAirportId: 10, // REC (Recife)
+    },
+    {
+      flightNumber: 'AA-031',
+      departureDateTime: new Date('2025-12-23T07:30:00'),
+      arrivalDateTime: new Date('2025-12-23T09:45:00'),
+      estimatedDurationMinutes: 135,
+      flightTypeId: 1,
+      aircraftId: 1,
+      originAirportId: 3, // LDB
+      destinationAirportId: 2, // CGH
+    },
+    {
+      flightNumber: 'AA-032',
+      departureDateTime: new Date('2025-12-23T11:00:00'),
+      arrivalDateTime: new Date('2025-12-23T15:30:00'),
+      estimatedDurationMinutes: 270,
+      flightTypeId: 1,
+      aircraftId: 2,
+      originAirportId: 7, // POA
+      destinationAirportId: 1, // GRU
     },
   ];
 
@@ -612,7 +738,7 @@ async function main() {
   - ${aircraftTypes.count} tipos de aeronaves adicionados
   - ${aircrafts.count} aeronaves adicionadas
   - ${employees.count} funcionários adicionados
-  - ${flightCount} voos adicionados para outubro de 2025
+  - ${flightCount} voos adicionados para novembro e dezembro de 2025
   - ${crewAssignmentCount} membros de crew atribuídos aos voos
   - ${seatCount} assentos criados em todos os voos
   `);

@@ -10,6 +10,45 @@ import { UpdateFlightDto } from './dto/update-flight.dto';
 export class FlightService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private generateSeatNumbers(seatMap: any, seatCapacity: number): string[] {
+    const seats: string[] = [];
+    const defaultColumns = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+    // If seatMap exists and has structure, use it
+    if (seatMap && seatMap.rows) {
+      const rows = seatMap.rows;
+      // Ensure columns is an array
+      let columns = defaultColumns;
+      if (seatMap.columns) {
+        if (Array.isArray(seatMap.columns)) {
+          columns = seatMap.columns;
+        } else if (typeof seatMap.columns === 'string') {
+          // If it's a string like "ABCDEF", split it into array
+          columns = seatMap.columns.split('');
+        }
+      }
+
+      for (let i = 1; i <= rows; i++) {
+        for (const column of columns) {
+          seats.push(`${i}${column}`);
+        }
+      }
+    } else {
+      // Fallback: generate seats based on capacity
+      // Assume 6 seats per row (A-F)
+      const seatsPerRow = 6;
+      const rows = Math.ceil(seatCapacity / seatsPerRow);
+
+      for (let i = 1; i <= rows; i++) {
+        for (let j = 0; j < seatsPerRow && seats.length < seatCapacity; j++) {
+          seats.push(`${i}${defaultColumns[j]}`);
+        }
+      }
+    }
+
+    return seats.slice(0, seatCapacity);
+  }
+
   async createFlight(flight: CreateFlightDto) {
     const { stopovers, crewMemberIds, ...flightData } = flight;
 
@@ -31,6 +70,27 @@ export class FlightService {
           destinationAirport: true,
         },
       });
+
+      // Create seats for the flight
+      const aircraft = await tx.aircraft.findUnique({
+        where: { id: flightData.aircraftId },
+        include: { aircraftType: true },
+      });
+
+      if (aircraft) {
+        const seatNumbers = this.generateSeatNumbers(
+          aircraft.aircraftType.seatMap,
+          aircraft.aircraftType.seatCapacity,
+        );
+
+        await tx.seat.createMany({
+          data: seatNumbers.map((seatNumber) => ({
+            flightId: createdFlight.id,
+            seatNumber,
+            isAvailable: true,
+          })),
+        });
+      }
 
       if (stopovers && stopovers.length > 0) {
         await tx.stopover.createMany({
@@ -113,6 +173,8 @@ export class FlightService {
     const endOfDay = new Date(searchDate);
     endOfDay.setHours(23, 59, 59, 999);
 
+    const now = new Date();
+
     return await this.prisma.flight.findMany({
       where: {
         originAirportId: originAirport.id,
@@ -120,6 +182,7 @@ export class FlightService {
         departureDateTime: {
           gte: startOfDay,
           lte: endOfDay,
+          gt: now,
         },
       },
       include: {
@@ -192,6 +255,36 @@ export class FlightService {
 
   findAllAdmin() {
     return this.prisma.flight.findMany({
+      include: {
+        flightType: true,
+        aircraft: {
+          include: {
+            aircraftType: true,
+          },
+        },
+        originAirport: true,
+        destinationAirport: true,
+        stopovers: {
+          include: {
+            airport: true,
+          },
+          orderBy: {
+            order: 'asc',
+          },
+        },
+        crewMembers: {
+          include: {
+            employee: true,
+          },
+        },
+        seats: {
+          select: {
+            id: true,
+            seatNumber: true,
+            isAvailable: true,
+          },
+        },
+      },
       orderBy: { departureDateTime: 'desc' },
     });
   }
