@@ -100,11 +100,12 @@ model Aircraft {
 
 // F8, 1.4: The central entity representing a flight schedule.
 model Flight {
-  id                       Int      @id @default(autoincrement())
-  flightNumber             String   @unique
+  id                       Int          @id @default(autoincrement())
+  flightNumber             String       @unique
   departureDateTime        DateTime
   arrivalDateTime          DateTime
   estimatedDurationMinutes Int
+  status                   FlightStatus @default(ACTIVE)
 
   flightTypeId Int
   flightType   FlightType @relation(fields: [flightTypeId], references: [id])
@@ -122,6 +123,11 @@ model Flight {
   crewMembers  FlightCrew[]
   reservations Reservation[]
   seats        Seat[]
+}
+
+enum FlightStatus {
+  ACTIVE
+  CANCELLED
 }
 
 // F8: Join table representing flight stopovers.

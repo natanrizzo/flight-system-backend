@@ -3,10 +3,11 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
-import { ReservationStatus } from '@prisma/client';
+import { ReservationStatus, FlightStatus } from '@prisma/client';
 
 @Injectable()
 export class ReservationService {
@@ -20,6 +21,11 @@ export class ReservationService {
       const flight = await tx.flight.findUnique({ where: { id: flightId } });
       if (!flight) {
         throw new NotFoundException(`Flight with ID ${flightId} not found.`);
+      }
+      if (flight.status === FlightStatus.CANCELLED) {
+        throw new BadRequestException(
+          `Cannot create a reservation for a cancelled flight.`,
+        );
       }
 
       // Verifica se os assentos estão ocupados por outros usuários (não por ele mesmo)

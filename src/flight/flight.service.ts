@@ -5,6 +5,7 @@ import { CreateFlightTypeDto } from './dto/create-flight-type.dto';
 import { CreateFlightDto } from './dto/create-flight.dto';
 import { SearchFlightDto } from './dto/search-flight.dto';
 import { UpdateFlightDto } from './dto/update-flight.dto';
+import { FlightStatus, ReservationStatus } from '@prisma/client';
 
 @Injectable()
 export class FlightService {
@@ -184,6 +185,7 @@ export class FlightService {
           lte: endOfDay,
           gt: now,
         },
+        status: FlightStatus.ACTIVE,
       },
       include: {
         flightType: true,
@@ -215,8 +217,11 @@ export class FlightService {
   }
 
   async findPublicById(id: number) {
-    const flight = await this.prisma.flight.findUnique({
-      where: { id },
+    const flight = await this.prisma.flight.findFirst({
+      where: { 
+        id,
+        status: FlightStatus.ACTIVE,
+      },
       include: {
         originAirport: true,
         destinationAirport: true,
@@ -236,8 +241,11 @@ export class FlightService {
   }
 
   getSeatMap(flightId: number) {
-    return this.prisma.flight.findUnique({
-      where: { id: flightId },
+    return this.prisma.flight.findFirst({
+      where: { 
+        id: flightId,
+        status: FlightStatus.ACTIVE,
+      },
       include: {
         aircraft: {
           include: {
@@ -255,6 +263,9 @@ export class FlightService {
 
   findAllAdmin() {
     return this.prisma.flight.findMany({
+      where: {
+        status: { not: FlightStatus.CANCELLED },
+      },
       include: {
         flightType: true,
         aircraft: {
@@ -331,7 +342,56 @@ export class FlightService {
   async removeFlight(id: number) {
     await this.findAdminById(id);
 
-    return this.prisma.flight.delete({ where: { id } });
+    return this.prisma.$transaction(async (tx) => {
+      // Get all reservations for this flight
+      const reservations = await tx.reservation.findMany({
+        where: { 
+          flightId: id,
+          status: { in: [ReservationStatus.PENDING, ReservationStatus.CONFIRMED] }
+        },
+        include: {
+          tickets: true,
+        },
+      });
+
+      // Cancel all reservations for this flight
+      if (reservations.length > 0) {
+        await tx.reservation.updateMany({
+          where: {
+            flightId: id,
+            status: { in: [ReservationStatus.PENDING, ReservationStatus.CONFIRMED] },
+          },
+          data: {
+            status: ReservationStatus.CANCELLED,
+          },
+        });
+
+        // Mark all seats as available since the flight is cancelled
+        const seatNumbers = reservations.flatMap((reservation) =>
+          reservation.tickets.map((ticket) => ticket.seatNumber),
+        );
+
+        if (seatNumbers.length > 0) {
+          await tx.seat.updateMany({
+            where: {
+              flightId: id,
+              seatNumber: { in: seatNumbers },
+            },
+            data: {
+              isAvailable: true,
+            },
+          });
+        }
+      }
+
+      // Mark the flight as cancelled instead of deleting
+      return tx.flight.update({
+        where: { id },
+        data: {
+          status: FlightStatus.CANCELLED,
+        },
+      });
+    });
   }
 
   createFlightType(flightType: CreateFlightTypeDto) {
